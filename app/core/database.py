@@ -1,7 +1,12 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, DeclarativeBase, Session
-from app.core.config import get_settings
+from __future__ import annotations
+
 from typing import Generator
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, Session
+
+from app.core.config import get_settings
+from app.models.base import Base
 
 
 settings = get_settings()
@@ -25,9 +30,6 @@ SessionLocal = sessionmaker(
     autoflush=False,
     autocommit=False,
 )
-
-class Base(DeclarativeBase):
-    pass
 
 def get_db() -> Generator[Session,None,None]:
     db = SessionLocal()
