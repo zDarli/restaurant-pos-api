@@ -1,0 +1,11 @@
+# app/core/logging_filters.py
+from __future__ import annotations
+
+import logging
+from app.core.request_id import get_request_id
+
+
+class RequestIdFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        record.request_id = get_request_id() or "-"
+        return True
