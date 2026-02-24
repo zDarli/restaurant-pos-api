@@ -13,12 +13,12 @@ def setup_logging() -> None:
     Вызывается один раз при старте (в app/main.py).
     """
     settings = get_settings()
-
     level = settings.LOG_LEVEL.upper()
 
     logging_config: dict[str, Any] = {
         "version": 1,
         "disable_existing_loggers": False,
+
         "formatters": {
             "default": {
                 "format": (
@@ -27,27 +27,42 @@ def setup_logging() -> None:
                 )
             },
         },
+
+        "filters": {
+            "request_id": {"()": "app.core.logging_filters.RequestIdFilter"},
+        },
+
         "handlers": {
             "console": {
                 "class": "logging.StreamHandler",
-                "formatter": "default",
                 "level": level,
+                "formatter": "default",
                 "filters": ["request_id"],
+                "stream": "ext://sys.stdout",
             }
         },
-        "filters":{
-            "request_id": {"()": "app.core.logging_filters.RequestIdFilter"}
-        },
-        "root": {  # root-логгер — базовый для всего приложения
-            "handlers": ["console"],
+
+        "root": {
             "level": level,
+            "handlers": ["console"],
         },
+
         "loggers": {
-            # можно управлять шумом библиотек
+            "app.http": {"level": level, "propagate": True},
+            "app.errors": {"level": level, "propagate": True},
+
             "uvicorn.error": {"level": level, "propagate": True},
             "uvicorn.access": {"level": level, "propagate": True},
+
             "sqlalchemy.engine": {"level": "WARNING", "propagate": True},
         },
     }
 
-    logging.config.dictConfig(logging_config)
+    try:
+        logging.config.dictConfig(logging_config)
+    except Exception:
+        logging.basicConfig(
+            level=level,
+            format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+        )
+        logging.getLogger("app.logging").exception("Failed to configure logging via dictConfig")
