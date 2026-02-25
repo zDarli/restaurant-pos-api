@@ -18,7 +18,6 @@ def setup_logging() -> None:
     logging_config: dict[str, Any] = {
         "version": 1,
         "disable_existing_loggers": False,
-
         "formatters": {
             "default": {
                 "format": (
@@ -27,11 +26,9 @@ def setup_logging() -> None:
                 )
             },
         },
-
         "filters": {
             "request_id": {"()": "app.core.logging_filters.RequestIdFilter"},
         },
-
         "handlers": {
             "console": {
                 "class": "logging.StreamHandler",
@@ -41,19 +38,15 @@ def setup_logging() -> None:
                 "stream": "ext://sys.stdout",
             }
         },
-
         "root": {
             "level": level,
             "handlers": ["console"],
         },
-
         "loggers": {
             "app.http": {"level": level, "propagate": True},
             "app.errors": {"level": level, "propagate": True},
-
             "uvicorn.error": {"level": level, "propagate": True},
             "uvicorn.access": {"level": level, "propagate": True},
-
             "sqlalchemy.engine": {"level": "WARNING", "propagate": True},
         },
     }
@@ -65,4 +58,6 @@ def setup_logging() -> None:
             level=level,
             format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
         )
-        logging.getLogger("app.logging").exception("Failed to configure logging via dictConfig")
+        logging.getLogger("app.logging").exception(
+            "Failed to configure logging via dictConfig"
+        )

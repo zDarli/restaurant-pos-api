@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+
 from app.core.request_id import get_request_id
 
 

@@ -4,13 +4,13 @@ from __future__ import annotations
 import logging
 
 from fastapi import Request
-from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from app.core.config import get_settings
 from app.core.errors import AppError
 from app.core.request_id import get_request_id
-from app.core.config import get_settings
 
 logger = logging.getLogger("app.errors")
 
@@ -43,7 +43,9 @@ async def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
     )
 
 
-async def http_exception_handler(request: Request, exc: StarletteHTTPException) -> JSONResponse:
+async def http_exception_handler(
+    request: Request, exc: StarletteHTTPException
+) -> JSONResponse:
     # HTTPException — ошибки типа 404/403/401 и т.п.
     logger.info(
         "http_error",
@@ -60,7 +62,9 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException) 
     )
 
 
-async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+async def validation_exception_handler(
+    request: Request, exc: RequestValidationError
+) -> JSONResponse:
     # Ошибки валидации pydantic на входе
     logger.info(
         "validation_error",
@@ -72,7 +76,9 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     )
     return JSONResponse(
         status_code=422,
-        content=error_payload(code="VALIDATION_ERROR", message="Invalid request", details=exc.errors()),
+        content=error_payload(
+            code="VALIDATION_ERROR", message="Invalid request", details=exc.errors()
+        ),
     )
 
 
