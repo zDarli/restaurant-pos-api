@@ -14,5 +14,7 @@ COPY . .
 # порт FastAPI
 EXPOSE 8000
 
+ENV PYTHONPATH=/app
+
 # команда запуска
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
