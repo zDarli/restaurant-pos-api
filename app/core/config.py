@@ -1,9 +1,15 @@
 from functools import lru_cache
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
+
     PROJECT_NAME: str = "Restaurant POS API"
     DEBUG: bool = False
 
@@ -16,8 +22,7 @@ class Settings(BaseSettings):
     DATABASE_PASSWORD: str = "postgres"
     DATABASE_NAME: str = "restaurant"
 
-    class Config:
-        env_file = ".env"
+    TEST_DATABASE_URL: str | None = None
 
 
 @lru_cache
