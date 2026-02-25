@@ -1,9 +1,9 @@
 # app/core/middleware.py
 from __future__ import annotations
 
+import logging
 import time
 import uuid
-import logging
 
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
